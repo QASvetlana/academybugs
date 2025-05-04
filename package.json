@@ -1,0 +1,21 @@
+{
+  "name": "academybugs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "testui": "npx playwright test --ui"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.3"
+  },
+  "dependencies": {
+    "allure": "^3.0.0-beta.11",
+    "allure-playwright": "^3.2.1"
+  }
+}
