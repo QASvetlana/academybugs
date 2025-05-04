@@ -1,13 +1,10 @@
-# Называем workflow
 name: pw test
 
-# Когда мы запускаем автотесты
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-  # ручной запуск
   workflow_dispatch:
 
 jobs: 
@@ -23,13 +20,53 @@ jobs:
         with:
           node-version: lts/*
 
-       # устанавливаем пакеты node
+      # Устанавливаем пакеты node
       - name: установить пакеты
         run: npm i
       
-      # устанавливаем PW
+      # Устанавливаем PW
       - name: Install PW
         run: npx playwright install --with-deps
       
+      # Запускаем тесты
       - name: Запустить тесты
         run: npm run test
+        
+      # Сохраняем результаты allure
+      - uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: allure-results
+          path: allure-results
+          retention-days: 20
+      
+      # Забираем результаты предыдущего запуска
+      - uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+      
+      # Формируем из allure-result отчет allure-report
+      - uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with: 
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+          keep_reports: 20
+
+      # Деплоим отчет
+      - name: deploy report
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with: 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+          
+      
