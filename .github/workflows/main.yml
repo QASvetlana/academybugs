@@ -12,61 +12,42 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps: 
-      # Делаем чекаут
       - uses: actions/checkout@v4
-      
-      # Устанавливаем nodejs
+        with:
+          fetch-depth: 0  # Важно для работы с историей
+
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
 
-      # Устанавливаем пакеты node
       - name: установить пакеты
         run: npm i
       
-      # Устанавливаем PW
       - name: Install PW
         run: npx playwright install --with-deps
       
-      # Запускаем тесты
       - name: Запустить тесты
         run: npm run test
         
-      # Сохраняем результаты allure
       - uses: actions/upload-artifact@v4
         if: always()
-        continue-on-error: true
         with:
           name: allure-results
           path: allure-results
           retention-days: 20
       
-      # Забираем результаты предыдущего запуска
-      - uses: actions/checkout@v4
+      - name: Generate Allure Report
         if: always()
-        continue-on-error: true
+        uses: simple-elf/allure-report-action@master
         with:
-          ref: gh-pages
-          path: gh-pages
-      
-      # Формируем из allure-result отчет allure-report
-      - uses: simple-elf/allure-report-action@master
-        if: always()
-        id: allure-report
-        with: 
           allure_results: allure-results
-          gh_pages: gh-pages
           allure_report: allure-report
-          allure_history: allure-history
-          keep_reports: 20
+          keep_reports: 5
 
-      # Деплоим отчет
-      - name: deploy report
+      - name: Deploy to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
-        with: 
+        with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-history
-          
-      
+          publish_dir: allure-report
+          force_orphan: true  # Полная очистка ветки перед деплоем
