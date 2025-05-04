@@ -1,0 +1,6 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","3432","Едет вертска у фото товара","chromium","Sun May 04 10:19:38 GMT 2025","passed","Sun May 04 10:19:42 GMT 2025","Поиск 5 багов на сайте академии багов","tests.spec.js","",""
+"","1903","Краш при смене колличества отображаемых на странице товаров","chromium","Sun May 04 10:19:36 GMT 2025","passed","Sun May 04 10:19:38 GMT 2025","Поиск 5 багов на сайте академии багов","tests.spec.js","",""
+"","6060","При переходе на производителя 404","chromium","Sun May 04 10:19:55 GMT 2025","passed","Sun May 04 10:20:01 GMT 2025","Поиск 5 багов на сайте академии багов","tests.spec.js","",""
+"","2156","Краш при смене типа валюты","chromium","Sun May 04 10:19:42 GMT 2025","passed","Sun May 04 10:19:44 GMT 2025","Поиск 5 багов на сайте академии багов","tests.spec.js","",""
+"","11237","Кнопка ""Домой"" не возвращает пользователя на главную","chromium","Sun May 04 10:19:44 GMT 2025","passed","Sun May 04 10:19:55 GMT 2025","Поиск 5 багов на сайте академии багов","tests.spec.js","",""
