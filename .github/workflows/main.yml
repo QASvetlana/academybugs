@@ -1,53 +1,89 @@
-name: pw test
+name: pw tests with allure
 
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
   workflow_dispatch:
 
-jobs: 
-  e2eTests:
-    timeout-minutes: 30
-    runs-on: ubuntu-latest
-    steps: 
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Важно для работы с историей
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
-      - uses: actions/setup-node@v4
+jobs:
+  e2eTests:
+    # timeout-minutes: 30
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Setup Node.js
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
-
-      - name: установить пакеты
-        run: npm i
       
-      - name: Install PW
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+      
+      # Install Playwright
+      - name: Install Playwright
         run: npx playwright install --with-deps
       
-      - name: Запустить тесты
-        run: npm run test
-        
-      - uses: actions/upload-artifact@v4
+      # Run tests
+      - name: Run Playwright tests
+        run: npx playwright test
+      
+      # Upload test results
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
         if: always()
+        continue-on-error: true
+        with:
+          name: test-results
+          path: test-results
+          retention-days: 20
+      
+      # Upload Allure results
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
         with:
           name: allure-results
           path: allure-results
           retention-days: 20
       
-      - name: Generate Allure Report
+      # Checkout gh-pages branch
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
         if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Generate Allure report
+      - name: Generate Allure report
         uses: simple-elf/allure-report-action@master
+        if: always()
+        continue-on-error: true
+        id: allure-report
         with:
           allure_results: allure-results
+          gh_pages: gh-pages
           allure_report: allure-report
-          keep_reports: 5
-
+          allure_history: allure-history
+          keep_reports: 20
+      
+      # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        if: always()
         uses: peaceiris/actions-gh-pages@v4
+        if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report
-          force_orphan: true  # Полная очистка ветки перед деплоем
+          publish_branch: gh-pages
+          publish_dir: allure-history
