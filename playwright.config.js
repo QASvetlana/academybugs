@@ -21,6 +21,7 @@ export default defineConfig({
    },
    /* Для отдельных действий (click, fill и т.д.) */
    use: {
+    baseURL: 'https://academybugs.com',
      actionTimeout: 30000, // 30 секунд
      trace: 'on-first-retry',
    }, 
@@ -81,4 +82,3 @@ export default defineConfig({
   //   reuseExistingServer: !process.env.CI,
   // },
 });
-
