@@ -1,9 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { MainPage } from '../src/pages/mainPage';
-import { ProductPage } from '../src/pages/productPage';
-import { CartPage } from '../src/pages/cartPage';
-import { FindBugsPage } from '../src/pages/findBugsPage';
-
+import { MainPage, ProductPage, CartPage, FindBugsPage } from '../src/pages/index';
 
 test.describe('Поиск 5 багов на сайте академии багов', () => {
   let mainPage;
